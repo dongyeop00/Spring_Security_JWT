@@ -11,6 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @RequiredArgsConstructor
+//로그인 검증을 위한 커스텀 UsernamePasswordAuthentication 필터 작성
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     /*
