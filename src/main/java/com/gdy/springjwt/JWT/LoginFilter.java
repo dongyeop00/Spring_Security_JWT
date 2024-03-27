@@ -1,5 +1,6 @@
 package com.gdy.springjwt.JWT;
 
+import com.gdy.springjwt.DTO.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,7 +9,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 @RequiredArgsConstructor
 //로그인 검증을 위한 커스텀 UsernamePasswordAuthentication 필터 작성
@@ -22,6 +27,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
      */
 
     private final AuthenticationManager authenticationManager;
+    //JWTUtile 주입
+    //SecurityConfig에서 JWTUitl도 주입해줘야한다.
+    private final JWTUtil jwtUtil;
 
     /*
     @RequiredArgsConstructor 없을 시 기본생성자 해줘야함
@@ -52,6 +60,26 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //로그인 성공시 실행하는 메서드 (여기서 jwt 발급)
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
+
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal(); //특정 유저를 가져올 수 있음
+
+        //이름 추출
+        String username = customUserDetails.getUsername();
+
+        //권한 추출
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        GrantedAuthority auth = iterator.next();
+
+        String role = auth.getAuthority();
+
+        String token = jwtUtil.createJwt(username, role, 60*60*10L);
+
+        //key : Authorization
+        //인증 방식 : Bearer(접두사를 필수로 붙여야한다.) + token
+        //인증 헤더 형태 : Authorization : Bearer 인증토큰(String)
+        response.addHeader("Authorization", "Bearer " + token);
+
         System.out.println("성공");
     }
 
@@ -59,6 +87,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //로그인 실패시 실행하는 메소드
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
+
+        response.setStatus(401);
         System.out.println("실패");
     }
 

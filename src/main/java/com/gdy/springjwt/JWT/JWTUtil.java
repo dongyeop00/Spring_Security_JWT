@@ -53,6 +53,7 @@ public class JWTUtil {
     }
 
     // 토큰 생성하는 메서드
+    // 로그인 성공 되었을 때 successful 핸들러를 통해 username, role, expiredMS로 토큰을 생성
     public String createJwt(String username, String role, Long expiredMs) {
 
         return Jwts.builder()
