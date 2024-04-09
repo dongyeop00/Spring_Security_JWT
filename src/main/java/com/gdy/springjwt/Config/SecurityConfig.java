@@ -77,7 +77,7 @@ public class SecurityConfig {
         http
                 .formLogin((auth)->auth.disable());
 
-        //http basic 인증 방식 disable
+        //http basic 인증 방식 disable, 로그인 인증창이 뜨지 않게 비활성화
         http
                 .httpBasic((auth)->auth.disable());
 
