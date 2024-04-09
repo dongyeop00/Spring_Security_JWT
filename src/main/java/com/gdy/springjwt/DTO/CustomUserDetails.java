@@ -2,6 +2,7 @@ package com.gdy.springjwt.DTO;
 
 import com.gdy.springjwt.Entity.UserEntity;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @RequiredArgsConstructor
+@ToString
 public class CustomUserDetails implements UserDetails {
 
     private final UserEntity userEntity;

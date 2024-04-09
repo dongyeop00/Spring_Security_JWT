@@ -34,8 +34,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     /*
     @RequiredArgsConstructor 없을 시 기본생성자 해줘야함
 
-    public LoginFilter(AuthenticationManager authenticationManager){
+    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil){
         this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil
     }
 
      */
@@ -73,7 +74,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(username, role, 60*60*10L);
+        String token = jwtUtil.createJwt(username, role, 600*600*10L);
 
         //key : Authorization
         //인증 방식 : Bearer(접두사를 필수로 붙여야한다.) + token

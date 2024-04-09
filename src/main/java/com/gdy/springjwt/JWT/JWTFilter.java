@@ -25,6 +25,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         //request에서 Authorization 헤더를 찾는다.
         String authorization = request.getHeader("Authorization");
+        System.out.println("authorization : " + authorization);
 
         //Authorization 검증
         if(authorization == null || !authorization.startsWith("Bearer ")){//접두사 검사
@@ -36,6 +37,7 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         System.out.println("authorization now");
+
         //Bearer 접두사 부분 제거 후 순수 토큰 획득
         String token = authorization.split(" ")[1];
 
@@ -59,6 +61,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         //UserDetails에 회원 정보 객체 담기
         CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
+        System.out.println("customUserDetails : " + customUserDetails);
 
         //Spring Security 인증 토큰 생성
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());

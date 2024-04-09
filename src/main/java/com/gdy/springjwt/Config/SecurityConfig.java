@@ -3,6 +3,7 @@ package com.gdy.springjwt.Config;
 import com.gdy.springjwt.JWT.JWTFilter;
 import com.gdy.springjwt.JWT.JWTUtil;
 import com.gdy.springjwt.JWT.LoginFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.Collections;
 
 @Configuration //config로 관리되는 어노테이션
 @EnableWebSecurity //security로 관리되는 어노테이션
@@ -40,6 +45,27 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+
+        http
+                .cors((cors)->cors
+                        .configurationSource(new CorsConfigurationSource() {
+                            @Override
+                            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+
+                                CorsConfiguration configuration = new CorsConfiguration();
+
+                                configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000")); //허용할 front 서버 주소
+                                configuration.setAllowedMethods(Collections.singletonList("*")); //허용할 메서드 ex)get post 등등
+                                configuration.setAllowCredentials(true);
+                                configuration.setAllowedHeaders(Collections.singletonList("*")); //허용할 헤더
+                                configuration.setMaxAge(3600L); //시간
+
+                                configuration.setExposedHeaders(Collections.singletonList("Authorization")); //front에 Authorization으로 jwt 전달
+
+                                return configuration;
+                            }
+                        }));
+
 
         //csrf disable
         // 세션 방식은 세션이 고정되있기 때문에 csrf 공격을 위해 방어해줘야 한다.
